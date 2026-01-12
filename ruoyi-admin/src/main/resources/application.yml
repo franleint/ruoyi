@@ -136,4 +136,5 @@ xss:
   urlPatterns: /system/*,/monitor/*,/tool/*
 
 #test-2 测试冲突
+#test-2测试merge(前一次冲突已经修改，这算是test-2的第二次修改）
 # 测试test-3冲突
