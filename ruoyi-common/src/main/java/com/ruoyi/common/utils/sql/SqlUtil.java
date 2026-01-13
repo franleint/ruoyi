@@ -14,7 +14,7 @@ public class SqlUtil
      * 定义常用的 sql关键字
      */
     public static String SQL_REGEX = "\u000B|and |extractvalue|updatexml|sleep|information_schema|exec |insert |select |delete |update |drop |count |chr |mid |master |truncate |char |declare |or |union |like |+|/*|user()";
-
+    public static String SQL_DEV_REGEX = "drop|delete";
     /**
      * 仅支持字母、数字、下划线、空格、逗号、小数点（支持多个字段排序）
      */
@@ -52,13 +52,19 @@ public class SqlUtil
     /**
      * SQL关键字检查
      */
-    public static void filterKeyword(String value)
+    public static void filterKeyword(String value,String env)
     {
         if (StringUtils.isEmpty(value))
         {
             return;
         }
-        String[] sqlKeywords = StringUtils.split(SQL_REGEX, "\\|");
+
+        String[] sqlKeywords;
+        if(env.equals("dev")||env.equals("test")){
+            sqlKeywords = StringUtils.split(SQL_DEV_REGEX, "\\|");
+        }else{
+            sqlKeywords = StringUtils.split(SQL_REGEX, "\\|");
+        }
         for (String sqlKeyword : sqlKeywords)
         {
             if (StringUtils.indexOfIgnoreCase(value, sqlKeyword) > -1)

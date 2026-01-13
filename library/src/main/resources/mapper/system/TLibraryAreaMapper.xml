@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.TLibraryAreaMapper">
+    
+    <resultMap type="TLibraryArea" id="TLibraryAreaResult">
+        <result property="areaId"    column="area_id"    />
+        <result property="areaName"    column="area_name"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectTLibraryAreaVo">
+        select area_id, area_name, del_flag, create_by, create_time, update_by, update_time, remark from t_library_area
+    </sql>
+
+    <select id="selectTLibraryAreaList" parameterType="TLibraryArea" resultMap="TLibraryAreaResult">
+        <include refid="selectTLibraryAreaVo"/>
+        <where>  
+            <if test="areaName != null  and areaName != ''"> and area_name like concat('%', #{areaName}, '%')</if>
+        </where>
+    </select>
+    
+    <select id="selectTLibraryAreaByAreaId" parameterType="Long" resultMap="TLibraryAreaResult">
+        <include refid="selectTLibraryAreaVo"/>
+        where area_id = #{areaId}
+    </select>
+
+    <insert id="insertTLibraryArea" parameterType="TLibraryArea" useGeneratedKeys="true" keyProperty="areaId">
+        insert into t_library_area
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="areaName != null and areaName != ''">area_name,</if>
+            <if test="delFlag != null">del_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="areaName != null and areaName != ''">#{areaName},</if>
+            <if test="delFlag != null">#{delFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateTLibraryArea" parameterType="TLibraryArea">
+        update t_library_area
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="areaName != null and areaName != ''">area_name = #{areaName},</if>
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where area_id = #{areaId}
+    </update>
+
+    <delete id="deleteTLibraryAreaByAreaId" parameterType="Long">
+        delete from t_library_area where area_id = #{areaId}
+    </delete>
+
+    <delete id="deleteTLibraryAreaByAreaIds" parameterType="String">
+        delete from t_library_area where area_id in 
+        <foreach item="areaId" collection="array" open="(" separator="," close=")">
+            #{areaId}
+        </foreach>
+    </delete>
+</mapper>

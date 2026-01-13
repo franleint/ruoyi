@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.TBookMapper">
+    
+    <resultMap type="TBook" id="TBookResult">
+        <result property="bookId"    column="book_id"    />
+        <result property="bookName"    column="book_name"    />
+        <result property="author"    column="author"    />
+        <result property="storeArea"    column="store_area"    />
+        <result property="categoryCode"    column="category_code"    />
+        <result property="status"    column="status"    />
+        <result property="borrowerId"    column="borrower_id"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+        <result property="borrowerName"    column="borrower_name"    />
+        <result property="areaName"    column="area_name"    />
+    </resultMap>
+
+    <sql id="selectTBookVo">
+        select b.book_id,  b.book_name,  b.author,  b.store_area,  b.category_code,  b.status,  b.borrower_id,  b.del_flag,  b.create_by,  b.create_time,  b.update_by,  b.update_time,  b.remark,
+            l.area_name as area_name, u.user_name as borrower_name
+        from t_book b
+        left join t_library_area l on l.area_id = b.store_area
+        left join t_book_borrow bb on bb.borrower_id = b.borrower_id
+        left join sys_user u on u.user_id = bb.borrower_id
+    </sql>
+
+    <select id="selectTBookList" parameterType="TBook" resultMap="TBookResult">
+        <include refid="selectTBookVo"/>
+        <where>  
+            <if test="bookName != null  and bookName != ''"> and b.book_name like concat('%', #{bookName}, '%')</if>
+            <if test="author != null  and author != ''"> and b.author like concat('%', #{author}, '%')</if>
+            <if test="storeArea != null  and storeArea != ''"> and b.store_area = #{storeArea}</if>
+            <if test="categoryCode != null  and categoryCode != ''"> and b.category_code like concat('%', #{categoryCode}, '%')</if>
+            <if test="status != null  and status != ''"> and b.status = #{status}</if>
+            <if test="borrowerId != null "> and b.borrower_id = #{borrowerId}</if>
+        </where>
+    </select>
+    
+    <select id="selectTBookByBookId" parameterType="Long" resultMap="TBookResult">
+        <include refid="selectTBookVo"/>
+        where b.book_id = #{bookId}
+    </select>
+
+    <insert id="insertTBook" parameterType="TBook" useGeneratedKeys="true" keyProperty="bookId">
+        insert into t_book
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="bookName != null and bookName != ''">book_name,</if>
+            <if test="author != null and author != ''">author,</if>
+            <if test="storeArea != null and storeArea != ''">store_area,</if>
+            <if test="categoryCode != null and categoryCode != ''">category_code,</if>
+            <if test="status != null">status,</if>
+            <if test="borrowerId != null">borrower_id,</if>
+            <if test="delFlag != null">del_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="bookName != null and bookName != ''">#{bookName},</if>
+            <if test="author != null and author != ''">#{author},</if>
+            <if test="storeArea != null and storeArea != ''">#{storeArea},</if>
+            <if test="categoryCode != null and categoryCode != ''">#{categoryCode},</if>
+            <if test="status != null">#{status},</if>
+            <if test="borrowerId != null">#{borrowerId},</if>
+            <if test="delFlag != null">#{delFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateTBook" parameterType="TBook">
+        update t_book
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="bookName != null and bookName != ''">book_name = #{bookName},</if>
+            <if test="author != null and author != ''">author = #{author},</if>
+            <if test="storeArea != null and storeArea != ''">store_area = #{storeArea},</if>
+            <if test="categoryCode != null and categoryCode != ''">category_code = #{categoryCode},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="borrowerId != null">borrower_id = #{borrowerId},</if>
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where book_id = #{bookId}
+    </update>
+
+    <delete id="deleteTBookByBookId" parameterType="Long">
+        delete from t_book where book_id = #{bookId}
+    </delete>
+
+    <delete id="deleteTBookByBookIds" parameterType="String">
+        delete from t_book where book_id in 
+        <foreach item="bookId" collection="array" open="(" separator="," close=")">
+            #{bookId}
+        </foreach>
+    </delete>
+</mapper>

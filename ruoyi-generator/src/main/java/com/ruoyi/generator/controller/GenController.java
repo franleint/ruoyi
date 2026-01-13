@@ -8,6 +8,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -50,7 +51,8 @@ public class GenController extends BaseController
 
     @Autowired
     private IGenTableColumnService genTableColumnService;
-
+    @Value("${ruoyi.env:prod}")
+    private String env;
     /**
      * 查询代码生成列表
      */
@@ -131,7 +133,7 @@ public class GenController extends BaseController
     {
         try
         {
-            SqlUtil.filterKeyword(sql);
+            SqlUtil.filterKeyword(sql,env);
             List<SQLStatement> sqlStatements = SQLUtils.parseStatements(sql, DbType.mysql);
             List<String> tableNames = new ArrayList<>();
             for (SQLStatement sqlStatement : sqlStatements)
